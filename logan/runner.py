@@ -40,7 +40,7 @@ def parse_args(args):
 
     # Unable to parse any arguments
     if index is None:
-        return (args, None, None)
+        return (args, None, [])
 
     return (args[:index], args[index], args[(index + 1):])
 
@@ -65,6 +65,7 @@ def run_app(project=None, default_config_path=None, default_settings=None,
 
     if not command:
         print "usage: %s [--config=/path/to/settings.py] [command] [options]" % runner_name
+        sys.exit(1)
 
     parser = OptionParser()
 

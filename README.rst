@@ -65,3 +65,9 @@ We'd then slightly adjust our entry point in our ``setup.py``::
             ],
         },
     )
+
+You'll now be able to access the ``sentry`` command as if it were django-admin.py. Even better, it will
+be configurable via an arbitrary settings file, and inherit any default settings you've specified::
+
+    # Note: run_gunicorn is provided by the gunicorn package
+    sentry run_gunicorn 0.0.0.0:8000 -w 3
