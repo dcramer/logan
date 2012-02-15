@@ -62,7 +62,7 @@ def run_app(project=None, default_config_path=None, default_settings=None,
     sys_args = sys.argv
 
     # The established command for running this program
-    runner_name = sys_args[0]
+    runner_name = os.path.basename(sys_args[0])
 
     args, command, command_args = parse_args(sys_args[1:])
 
