@@ -13,7 +13,7 @@ for running the application::
         install_requires=['logan'],
         entry_points={
             'console_scripts': [
-                'sentry = logan.runner:main',
+                'sentry = logan.runner:run_app',
             ],
         },
     )
@@ -32,7 +32,7 @@ as well as a template to generate for the user if their configuration does not e
 
 To do this, within our sentry project we create a simple script, lets call put it in ``sentry/logan_runner.py``::
 
-    from logan.runner import run_configured
+    from logan.runner import run_app
 
     def generate_settings():
         """
@@ -43,7 +43,7 @@ To do this, within our sentry project we create a simple script, lets call put i
         return ""
 
     def main():
-        run_configured(
+        run_app(
             project='sentry',
             default_path='~/.sentry/',
             settings='sentry.conf.settings.defaults',
