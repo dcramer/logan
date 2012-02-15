@@ -46,7 +46,7 @@ To do this, within our sentry project we create a simple script, lets call put i
         run_app(
             project='sentry',
             default_config_path='~/.sentry/',
-            settings='sentry.conf.settings.defaults',
+            default_settings='sentry.conf.defaults',
             settings_initializer='sentry.logan_runner.generate_settings',
             settings_envvar='SENTRY_CONF',
         )
