@@ -9,6 +9,7 @@ logan.runner
 from __future__ import absolute_import
 
 from django.core import management
+from django.utils.importlib import import_module
 from optparse import OptionParser
 import os
 import re
@@ -118,7 +119,8 @@ def run_app(project=None, default_config_path=None, default_settings=None,
         raise ValueError("Configuration file does not exist. Use '%s init' to initialize the file." % runner_name)
 
     if default_settings:
-        management.setup_environ(default_settings)
+        settings_mod = import_module(default_settings)
+        management.setup_environ(settings_mod)
 
     load_settings(config_path)
 
