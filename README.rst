@@ -50,3 +50,15 @@ To do this, within our sentry project we create a simple script, lets call it se
 
     if __name__ == '__main__':
         main()
+
+We'd then slightly adjust our entry point in our ``setup.py``::
+
+    setup(
+        name='sentry',
+        install_requires=['logan'],
+        entry_points={
+            'console_scripts': [
+                'sentry = sentry_logan:main',
+            ],
+        },
+    )
