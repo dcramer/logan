@@ -45,9 +45,10 @@ To do this, within our sentry project we create a simple script, lets call put i
     def main():
         run_app(
             project='sentry',
-            default_path='~/.sentry/',
+            default_config_path='~/.sentry/',
             settings='sentry.conf.settings.defaults',
             settings_initializer='sentry.logan_runner.generate_settings',
+            settings_envvar='SENTRY_CONF',
         )
 
     if __name__ == '__main__':
