@@ -10,6 +10,7 @@ from __future__ import absolute_import
 
 import errno
 import imp
+import os
 from django.conf import settings
 
 __all__ = ('create_default_settings', 'load_settings')
@@ -20,6 +21,10 @@ def create_default_settings(filepath, settings_initializer):
         output = settings_initializer()
     else:
         output = ''
+
+    dirname = os.path.dirname(filepath)
+    if not os.path.exists(dirname):
+        os.makedirs(dirname)
 
     with open(filepath, 'w') as fp:
         fp.write(output)
