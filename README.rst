@@ -28,7 +28,7 @@ and then passes the command off to Django's internal representation of django-ad
 In most cases, you're also going to want to provide a default configuration to inherit from,
 as well as a template to generate for the user if their configuration does not exist.
 
-To do this, within our sentry project we create a simple script, lets call it sentry_logan.py::
+To do this, within our sentry project we create a simple script, lets call put it in ``sentry/logan_runner.py``::
 
     from logan.runner import run_configured
 
@@ -45,7 +45,7 @@ To do this, within our sentry project we create a simple script, lets call it se
             project='sentry',
             default_path='~/.sentry/',
             settings='sentry.conf.settings.defaults',
-            settings_initializer='sentry_logan.generate_settings',
+            settings_initializer='sentry.logan_runner.generate_settings',
         )
 
     if __name__ == '__main__':
@@ -58,7 +58,7 @@ We'd then slightly adjust our entry point in our ``setup.py``::
         install_requires=['logan'],
         entry_points={
             'console_scripts': [
-                'sentry = sentry_logan:main',
+                'sentry = sentry.logan_runner:main',
             ],
         },
     )
