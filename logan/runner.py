@@ -46,7 +46,7 @@ def parse_args(args):
 
 
 def run_app(project=None, default_config_path=None, default_settings=None,
-            settings_initializer=None, settings_envvar=None):
+            settings_initializer=None, settings_envvar=None, initializer=None):
     """
     :param project: should represent the canonical name for the project, generally
         the same name it assigned in distutils.
@@ -54,6 +54,8 @@ def run_app(project=None, default_config_path=None, default_settings=None,
     :param default_settings: default settings to load (think inheritence).
     :param settings_initializer: a callback function which should return a string
         representing the default settings template to generate.
+    :param initializer: a callback function which will be executed before the command
+        is executed. It is passed a dictionary of various configuration attributes.
     """
 
     sys_args = sys.argv
@@ -119,6 +121,12 @@ def run_app(project=None, default_config_path=None, default_settings=None,
         management.setup_environ(default_settings)
 
     load_settings(config_path)
+
+    if initializer is not None:
+        initializer({
+            'project': project,
+            'config_path': config_path,
+        })
 
     management.execute_from_command_line([runner_name, command] + command_args)
 
