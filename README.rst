@@ -23,7 +23,9 @@ standard structure of sentry/management/commands/<command name>.py.
 
 Now when we call sentry. it's actually piping that to the logan runner. Logan simply
 loads the predefined settings file (which defaults to PROJECT_CONF, or ~/.project/project.conf.py)
-and then passes the command off to Django's internal representation of django-admin.py.
+and then passes the command off to Django's internal representation of django-admin.py. In this case,
+PROJECT is determined by the caller of logan.runner, which is "sentry". If it were "foo-bar", PROJECT
+would be FOO_BAR, and "project" would still be "foo-bar".
 
 In most cases, you're also going to want to provide a default configuration to inherit from,
 as well as a template to generate for the user if their configuration does not exist.
