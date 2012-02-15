@@ -74,7 +74,7 @@ def run_app(project=None, default_config_path=None, default_settings=None,
         default_config_path = '~/%s/%s.conf.py' % (project_filename, project_filename)
 
     if settings_envvar is None:
-        settings_envvar = project_filename.upper()
+        settings_envvar = project_filename.upper() + '_CONF'
 
     # normalize path
     if settings_envvar in os.environ:
