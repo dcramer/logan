@@ -44,10 +44,14 @@ def load_settings(filename, silent=False):
         e.strerror = 'Unable to load configuration file (%s)' % e.strerror
         raise
 
-    tuple_settings = ('INSTALLED_APPS', 'TEMPLATE_DIRS')
-
     if not settings.configured:
         settings.configure()
+
+    add_settings(mod)
+
+
+def add_settings(mod):
+    tuple_settings = ('INSTALLED_APPS', 'TEMPLATE_DIRS')
 
     for setting in dir(mod):
         if setting == setting.upper():

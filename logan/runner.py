@@ -15,7 +15,8 @@ import os
 import re
 import sys
 
-from logan.settings import create_default_settings, load_settings
+from logan.settings import create_default_settings, load_settings, \
+  add_settings
 
 
 def sanitize_name(project):
@@ -120,7 +121,9 @@ def run_app(project=None, default_config_path=None, default_settings=None,
 
     if default_settings:
         settings_mod = import_module(default_settings)
+        # TODO: logan should create a proxy module for its settings
         management.setup_environ(settings_mod)
+        add_settings(settings_mod)
 
     load_settings(config_path)
 
