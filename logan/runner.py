@@ -112,7 +112,7 @@ def run_app(project=None, default_config_path=None, default_settings=None,
 
     parser.add_option('--config', metavar='CONFIG', default=default_config_path)
 
-    (options, logan_args) = parser.parse_args()
+    (options, logan_args) = parser.parse_args(args)
 
     config_path = options.config
 
