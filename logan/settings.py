@@ -23,7 +23,7 @@ def create_default_settings(filepath, settings_initializer):
         output = ''
 
     dirname = os.path.dirname(filepath)
-    if not os.path.exists(dirname):
+    if dirname and not os.path.exists(dirname):
         os.makedirs(dirname)
 
     with open(filepath, 'w') as fp:
