@@ -28,6 +28,7 @@ setup(
         'nose>=1.1.2',
         'unittest2',
     ],
+    test_suite='unittest2.collector',
     license='Apache License 2.0',
     include_package_data=True,
     classifiers=[
