@@ -82,7 +82,7 @@ of type list or tuple.
 For example, to register additional ``INSTALLED_APPS``, you would simply specify this in your custom
 (user) configuration::
 
-    EXTRA_APPS = (
+    EXTRA_INSTALLED_APPS = (
         'foo.bar',
     )
 
