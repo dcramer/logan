@@ -48,7 +48,8 @@ def parse_args(args):
 
 
 def run_app(project=None, default_config_path=None, default_settings=None,
-            settings_initializer=None, settings_envvar=None, initializer=None):
+            settings_initializer=None, settings_envvar=None, initializer=None,
+            allow_extras=True):
     """
     :param project: should represent the canonical name for the project, generally
         the same name it assigned in distutils.
@@ -123,9 +124,9 @@ def run_app(project=None, default_config_path=None, default_settings=None,
         settings_mod = import_module(default_settings)
         # TODO: logan should create a proxy module for its settings
         management.setup_environ(settings_mod, default_settings)
-        add_settings(settings_mod)
+        add_settings(settings_mod, allow_extras=allow_extras)
 
-    load_settings(config_path)
+    load_settings(config_path, allow_extras=allow_extras)
 
     if initializer is not None:
         initializer({

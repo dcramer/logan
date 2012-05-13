@@ -71,3 +71,27 @@ be configurable via an arbitrary settings file, and inherit any default settings
 
     # Note: run_gunicorn is provided by the gunicorn package
     sentry run_gunicorn 0.0.0.0:8000 -w 3
+
+Extra Applications
+------------------
+
+A need might come up to allow the user to register additional settings. These will automatically apply
+based on keynames prefixed with ``EXTRA_`` assuming the base key (the latter part of the setting name) is
+of type list or tuple.
+
+For example, to register additional ``INSTALLED_APPS``, you would simply specify this in your custom
+(user) configuration::
+
+    EXTRA_APPS = (
+        'foo.bar',
+    )
+
+This will ensure your default setting's ``INSTALLED_APPS`` do not have to be modified, and the user
+can specify additional apps with ease.
+
+If you wish to disable this functionality, simply pass ``allow_extra=False`` to ``run_app``::
+
+    run_app(
+        # ...,
+        allow_extras=False,
+    )

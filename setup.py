@@ -25,6 +25,7 @@ setup(
     install_requires=[],
     tests_require=[
         'django>=1.2.5,<1.5',
+        'mock>=0.8.0',
         'nose>=1.1.2',
         'unittest2',
     ],
