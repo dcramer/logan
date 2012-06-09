@@ -129,9 +129,12 @@ def run_app(project=None, default_config_path=None, default_settings=None,
     load_settings(config_path, allow_extras=allow_extras)
 
     if initializer is not None:
+        from django.conf import settings
+
         initializer({
             'project': project,
             'config_path': config_path,
+            'settings': settings,
         })
 
     management.execute_from_command_line([runner_name, command] + command_args)
