@@ -12,7 +12,8 @@ from __future__ import with_statement
 import errno
 import imp
 import os
-from django.conf import settings as _settings
+import sys
+from django.conf import Settings, global_settings, settings as _settings
 
 __all__ = ('create_default_settings', 'load_settings')
 
@@ -33,24 +34,50 @@ def create_default_settings(filepath, settings_initializer):
         fp.write(output)
 
 
-def load_settings(filename, silent=False, allow_extras=True, settings=_settings):
-    """
-    Configures django settings from an arbitrary (non sys.path) filename.
-    """
-    mod = imp.new_module('config')
-    mod.__file__ = filename
-    try:
-        execfile(filename, mod.__dict__)
-    except IOError, e:
-        if silent and e.errno in (errno.ENOENT, errno.EISDIR):
-            return False
-        e.strerror = 'Unable to load configuration file (%s)' % e.strerror
-        raise
+def create_module(name, install=True):
+    mod = imp.new_module(name)
+    if install:
+        sys.modules[name] = mod
+    return mod
 
-    if not settings.configured:
-        settings.configure()
 
-    add_settings(mod, allow_extras=allow_extras, settings=settings)
+def install_settings(filename, default_settings=global_settings, silent=False, allow_extras=True, settings=_settings):
+    settings_mod = create_module('logan_config')
+
+    # Django doesn't play too nice without the config file living as a real file, so let's fake it.
+    settings_mod.__file__ = filename
+
+    # Gunicorn doesn't play nice without DJANGO_SETTINGS_MODULE
+    os.environ['DJANGO_SETTINGS_MODULE'] = filename
+
+    # install the default settings for this app
+    load_settings(default_settings, allow_extras=allow_extras, settings=settings_mod)
+
+    # install the custom settings for this app
+    load_settings(filename, allow_extras=allow_extras, settings=settings_mod)
+
+    # HACK: we need to ensure that the settings object doesnt configure itself until we tell it to
+    settings_inst = Settings('logan_config')
+    settings._wrapped = settings_inst
+
+    return settings
+
+
+def load_settings(mod_or_filename, silent=False, allow_extras=True, settings=_settings):
+    if isinstance(mod_or_filename, basestring):
+        conf = create_module('temp_config', install=False)
+        conf.__file__ = mod_or_filename
+        try:
+            execfile(mod_or_filename, conf.__dict__)
+        except IOError, e:
+            if silent and e.errno in (errno.ENOENT, errno.EISDIR):
+                return settings
+            e.strerror = 'Unable to load configuration file (%s)' % e.strerror
+            raise
+    else:
+        conf = mod_or_filename
+
+    add_settings(conf, allow_extras=allow_extras, settings=settings)
 
 
 def add_settings(mod, allow_extras=True, settings=_settings):
