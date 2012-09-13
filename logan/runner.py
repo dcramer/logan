@@ -9,13 +9,13 @@ logan.runner
 from __future__ import absolute_import
 
 from django.core import management
-from django.utils.importlib import import_module
 from optparse import OptionParser
 import os
 import re
 import sys
 
-from logan.settings import create_default_settings, install_settings
+from logan import importer
+from logan.settings import create_default_settings
 
 
 def sanitize_name(project):
@@ -119,14 +119,9 @@ def run_app(project=None, default_config_path=None, default_settings=None,
     if not os.path.exists(config_path):
         raise ValueError("Configuration file does not exist. Use '%s init' to initialize the file." % runner_name)
 
-    if default_settings:
-        default_settings_mod = import_module(default_settings)
-        # TODO: logan should create a proxy module for its settings
-        # management.setup_environ(settings_mod, default_settings)
-    else:
-        default_settings_mod = None
+    os.environ['DJANGO_SETTINGS_MODULE'] = 'logan_config'
 
-    install_settings(config_path, default_settings_mod, allow_extras=allow_extras)
+    importer.install('logan_config', config_path, default_settings, allow_extras=allow_extras)
 
     if initializer is not None:
         from django.conf import settings

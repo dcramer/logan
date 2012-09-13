@@ -41,28 +41,6 @@ def create_module(name, install=True):
     return mod
 
 
-def install_settings(filename, default_settings=global_settings, silent=False, allow_extras=True, settings=_settings):
-    settings_mod = create_module('logan_config')
-
-    # Django doesn't play too nice without the config file living as a real file, so let's fake it.
-    settings_mod.__file__ = filename
-
-    # Gunicorn doesn't play nice without DJANGO_SETTINGS_MODULE
-    os.environ['DJANGO_SETTINGS_MODULE'] = filename
-
-    # install the default settings for this app
-    load_settings(default_settings, allow_extras=allow_extras, settings=settings_mod)
-
-    # install the custom settings for this app
-    load_settings(filename, allow_extras=allow_extras, settings=settings_mod)
-
-    # HACK: we need to ensure that the settings object doesnt configure itself until we tell it to
-    settings_inst = Settings('logan_config')
-    settings._wrapped = settings_inst
-
-    return settings
-
-
 def load_settings(mod_or_filename, silent=False, allow_extras=True, settings=_settings):
     if isinstance(mod_or_filename, basestring):
         conf = create_module('temp_config', install=False)
