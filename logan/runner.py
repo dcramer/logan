@@ -114,7 +114,7 @@ def run_app(project=None, default_config_path=None, default_settings=None,
 
     (options, logan_args) = parser.parse_args(args)
 
-    config_path = options.config
+    config_path = os.path.expanduser(options.config)
 
     if not os.path.exists(config_path):
         raise ValueError("Configuration file does not exist. Use '%s init' to initialize the file." % runner_name)
