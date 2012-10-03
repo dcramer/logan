@@ -45,8 +45,13 @@ class LoganImporter(object):
         if fullname != self.name:
             return
 
-        return LoganLoader(self.name, self.config_path, self.default_settings,
-            self.allow_extras, self.callback)
+        return LoganLoader(
+            name=self.name,
+            config_path=self.config_path,
+            default_settings=self.default_settings,
+            allow_extras=self.allow_extras,
+            callback=self.callback,
+        )
 
 
 class LoganLoader(object):
