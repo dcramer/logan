@@ -6,9 +6,7 @@ logan.importer
 :license: Apache License 2.0, see LICENSE for more details.
 """
 
-import imp
 import sys
-from django.core.exceptions import ImproperlyConfigured
 from django.utils.importlib import import_module
 from logan.settings import load_settings, create_module
 
@@ -27,11 +25,12 @@ def install(name, config_path, default_settings, **kwargs):
 
 
 class LoganImporter(object):
-    def __init__(self, name, config_path, default_settings=None, allow_extras=True):
+    def __init__(self, name, config_path, default_settings=None, allow_extras=True, callback=None):
         self.name = name
         self.config_path = config_path
         self.default_settings = default_settings
         self.allow_extras = allow_extras
+        self.callback = callback
         self.validate()
 
     def __repr__(self):
@@ -46,15 +45,17 @@ class LoganImporter(object):
         if fullname != self.name:
             return
 
-        return LoganLoader(self.name, self.config_path, self.default_settings)
+        return LoganLoader(self.name, self.config_path, self.default_settings,
+            self.allow_extras, self.callback)
 
 
 class LoganLoader(object):
-    def __init__(self, name, config_path, default_settings=None, allow_extras=True):
+    def __init__(self, name, config_path, default_settings=None, allow_extras=True, callback=None):
         self.name = name
         self.config_path = config_path
         self.default_settings = default_settings
         self.allow_extras = allow_extras
+        self.callback = callback
 
     def load_module(self, fullname):
         # TODO: is this needed?
@@ -76,5 +77,8 @@ class LoganLoader(object):
 
         # install the custom settings for this app
         load_settings(self.config_path, allow_extras=self.allow_extras, settings=settings_mod)
+
+        if self.callback:
+            self.callback(settings_mod)
 
         return settings_mod

@@ -121,16 +121,17 @@ def run_app(project=None, default_config_path=None, default_settings=None,
 
     os.environ['DJANGO_SETTINGS_MODULE'] = 'logan_config'
 
-    importer.install('logan_config', config_path, default_settings, allow_extras=allow_extras)
-
-    if initializer is not None:
-        from django.conf import settings
+    def settings_callback(settings):
+        if initializer is None:
+            return
 
         initializer({
             'project': project,
             'config_path': config_path,
             'settings': settings,
         })
+
+    importer.install('logan_config', config_path, default_settings, allow_extras=allow_extras, callback=settings_callback)
 
     management.execute_from_command_line([runner_name, command] + command_args)
 
