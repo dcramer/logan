@@ -48,7 +48,7 @@ def parse_args(args):
 
 def run_app(project=None, default_config_path=None, default_settings=None,
             settings_initializer=None, settings_envvar=None, initializer=None,
-            allow_extras=True):
+            allow_extras=True, config_module_name=None):
     """
     :param project: should represent the canonical name for the project, generally
         the same name it assigned in distutils.
@@ -80,6 +80,9 @@ def run_app(project=None, default_config_path=None, default_settings=None,
 
     if settings_envvar is None:
         settings_envvar = project_filename.upper() + '_CONF'
+
+    if config_module_name is None:
+        config_module_name = project_filename + '_config'
 
     # normalize path
     if settings_envvar in os.environ:
@@ -119,7 +122,7 @@ def run_app(project=None, default_config_path=None, default_settings=None,
     if not os.path.exists(config_path):
         raise ValueError("Configuration file does not exist. Use '%s init' to initialize the file." % runner_name)
 
-    os.environ['DJANGO_SETTINGS_MODULE'] = 'logan_config'
+    os.environ['DJANGO_SETTINGS_MODULE'] = config_module_name
 
     def settings_callback(settings):
         if initializer is None:
@@ -131,7 +134,8 @@ def run_app(project=None, default_config_path=None, default_settings=None,
             'settings': settings,
         })
 
-    importer.install('logan_config', config_path, default_settings, allow_extras=allow_extras, callback=settings_callback)
+    importer.install(config_module_name, config_path, default_settings,
+        allow_extras=allow_extras, callback=settings_callback)
 
     management.execute_from_command_line([runner_name, command] + command_args)
 
