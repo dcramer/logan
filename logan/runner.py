@@ -46,9 +46,9 @@ def parse_args(args):
     return (args[:index], args[index], args[(index + 1):])
 
 
-def run_app(project=None, default_config_path=None, default_settings=None,
+def configure_app(config_path=None, project=None, default_config_path=None, default_settings=None,
             settings_initializer=None, settings_envvar=None, initializer=None,
-            allow_extras=True, config_module_name=None):
+            allow_extras=True, config_module_name=None, runner_name=None):
     """
     :param project: should represent the canonical name for the project, generally
         the same name it assigned in distutils.
@@ -59,19 +59,6 @@ def run_app(project=None, default_config_path=None, default_settings=None,
     :param initializer: a callback function which will be executed before the command
         is executed. It is passed a dictionary of various configuration attributes.
     """
-
-    sys_args = sys.argv
-
-    # The established command for running this program
-    runner_name = os.path.basename(sys_args[0])
-
-    args, command, command_args = parse_args(sys_args[1:])
-
-    if not command:
-        print "usage: %s [--config=/path/to/settings.py] [command] [options]" % runner_name
-        sys.exit(1)
-
-    parser = OptionParser()
 
     project_filename = sanitize_name(project)
 
@@ -90,9 +77,53 @@ def run_app(project=None, default_config_path=None, default_settings=None,
     else:
         default_config_path = os.path.normpath(os.path.abspath(os.path.expanduser(default_config_path)))
 
+    if not config_path:
+        config_path = default_config_path
+
+    config_path = os.path.expanduser(config_path)
+
+    if not os.path.exists(config_path):
+        if runner_name:
+            raise ValueError("Configuration file does not exist. Use '%s init' to initialize the file." % (runner_name,))
+        raise ValueError("Configuration file does not exist at %r" % (config_path,))
+
+    os.environ['DJANGO_SETTINGS_MODULE'] = config_module_name
+
+    def settings_callback(settings):
+        if initializer is None:
+            return
+
+        initializer({
+            'project': project,
+            'config_path': config_path,
+            'settings': settings,
+        })
+
+    importer.install(config_module_name, config_path, default_settings,
+        allow_extras=allow_extras, callback=settings_callback)
+
+
+def run_app(*args, **kwargs):
+    sys_args = sys.argv
+
+    # The established command for running this program
+    runner_name = os.path.basename(sys_args[0])
+
+    args, command, command_args = parse_args(sys_args[1:])
+
+    if not command:
+        print "usage: %s [--config=/path/to/settings.py] [command] [options]" % runner_name
+        sys.exit(1)
+
+    default_config_path = kwargs.get('default_config_path')
+
+    parser = OptionParser()
+
     # The ``init`` command is reserved for initializing configuration
     if command == 'init':
         (options, opt_args) = parser.parse_args()
+
+        settings_initializer = kwargs.get('settings_initializer')
 
         config_path = ' '.join(opt_args[1:]) or default_config_path
 
@@ -117,25 +148,9 @@ def run_app(project=None, default_config_path=None, default_settings=None,
 
     (options, logan_args) = parser.parse_args(args)
 
-    config_path = os.path.expanduser(options.config)
+    config_path = options.config
 
-    if not os.path.exists(config_path):
-        raise ValueError("Configuration file does not exist. Use '%s init' to initialize the file." % runner_name)
-
-    os.environ['DJANGO_SETTINGS_MODULE'] = config_module_name
-
-    def settings_callback(settings):
-        if initializer is None:
-            return
-
-        initializer({
-            'project': project,
-            'config_path': config_path,
-            'settings': settings,
-        })
-
-    importer.install(config_module_name, config_path, default_settings,
-        allow_extras=allow_extras, callback=settings_callback)
+    configure_app(config_path, *args, **kwargs)
 
     management.execute_from_command_line([runner_name, command] + command_args)
 
