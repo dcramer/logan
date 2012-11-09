@@ -103,7 +103,7 @@ def configure_app(config_path=None, project=None, default_config_path=None, defa
         allow_extras=allow_extras, callback=settings_callback)
 
 
-def run_app(*args, **kwargs):
+def run_app(**kwargs):
     sys_args = sys.argv
 
     # The established command for running this program
@@ -150,7 +150,7 @@ def run_app(*args, **kwargs):
 
     config_path = options.config
 
-    configure_app(config_path, *args, **kwargs)
+    configure_app(config_path=config_path, **kwargs)
 
     management.execute_from_command_line([runner_name, command] + command_args)
 
