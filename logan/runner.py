@@ -125,7 +125,7 @@ def run_app(**kwargs):
 
         settings_initializer = kwargs.get('settings_initializer')
 
-        config_path = ' '.join(opt_args[1:]) or default_config_path
+        config_path = os.path.expanduser(' '.join(opt_args[1:]) or default_config_path)
 
         if os.path.exists(config_path):
             resp = None
