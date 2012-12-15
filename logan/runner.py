@@ -144,7 +144,7 @@ def run_app(**kwargs):
 
         return
 
-    parser.add_option('--config', metavar='CONFIG', default=default_config_path)
+    parser.add_option('--config', metavar='CONFIG')
 
     (options, logan_args) = parser.parse_args(args)
 
