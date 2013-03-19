@@ -7,6 +7,7 @@ logan.importer
 """
 
 import sys
+from django.core.exceptions import ImproperlyConfigured
 from django.utils.importlib import import_module
 from logan.settings import load_settings, create_module
 
@@ -63,6 +64,13 @@ class LoganLoader(object):
         self.callback = callback
 
     def load_module(self, fullname):
+        try:
+            return self._load_module(fullname)
+        except Exception as e:
+            exc_info = sys.exc_info()
+            raise ImproperlyConfigured, repr(e), exc_info[2]
+
+    def _load_module(self, fullname):
         # TODO: is this needed?
         if fullname in sys.modules:
             return sys.modules[fullname]  # pragma: no cover
