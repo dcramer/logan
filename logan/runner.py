@@ -93,11 +93,18 @@ def configure_app(config_path=None, project=None, default_config_path=None, defa
         if initializer is None:
             return
 
-        initializer({
-            'project': project,
-            'config_path': config_path,
-            'settings': settings,
-        })
+        try:
+            initializer({
+                'project': project,
+                'config_path': config_path,
+                'settings': settings,
+            })
+        except Exception:
+            # XXX: Django doesn't like various errors in this path
+            import sys
+            import traceback
+            traceback.print_exc()
+            sys.exit(1)
 
     importer.install(config_module_name, config_path, default_settings,
         allow_extras=allow_extras, callback=settings_callback)
