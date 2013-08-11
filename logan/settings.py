@@ -47,7 +47,7 @@ def load_settings(mod_or_filename, silent=False, allow_extras=True, settings=_se
         conf.__file__ = mod_or_filename
         try:
             execfile(mod_or_filename, conf.__dict__)
-        except IOError, e:
+        except IOError as e:
             if silent and e.errno in (errno.ENOENT, errno.EISDIR):
                 return settings
             e.strerror = 'Unable to load configuration file (%s)' % e.strerror

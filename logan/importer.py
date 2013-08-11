@@ -25,6 +25,10 @@ def install(name, config_path, default_settings, **kwargs):
     installed = True
 
 
+class ConfigurationError(Exception):
+    pass
+
+
 class LoganImporter(object):
     def __init__(self, name, config_path, default_settings=None, allow_extras=True, callback=None):
         self.name = name
@@ -68,7 +72,7 @@ class LoganLoader(object):
             return self._load_module(fullname)
         except Exception as e:
             exc_info = sys.exc_info()
-            raise ImproperlyConfigured, repr(e), exc_info[2]
+            raise ConfigurationError, repr(e), exc_info[2]
 
     def _load_module(self, fullname):
         # TODO: is this needed?
