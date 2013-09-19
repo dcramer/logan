@@ -6,8 +6,9 @@ logan.importer
 :license: Apache License 2.0, see LICENSE for more details.
 """
 
+from __future__ import absolute_import
+
 import sys
-from django.core.exceptions import ImproperlyConfigured
 from django.utils.importlib import import_module
 from logan.settings import load_settings, create_module
 
@@ -72,7 +73,7 @@ class LoganLoader(object):
             return self._load_module(fullname)
         except Exception as e:
             exc_info = sys.exc_info()
-            raise ConfigurationError, repr(e), exc_info[2]
+            raise (ConfigurationError, repr(e), exc_info[2])
 
     def _load_module(self, fullname):
         # TODO: is this needed?
