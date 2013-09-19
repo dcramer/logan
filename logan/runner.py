@@ -111,6 +111,11 @@ def configure_app(config_path=None, project=None, default_config_path=None,
         config_module_name, config_path, default_settings,
         allow_extras=allow_extras, callback=settings_callback)
 
+    # HACK(dcramer): we need to force access of django.conf.settings to
+    # ensure we don't hit any import-driven recursive behavior
+    from django.conf import settings
+    hasattr(settings, 'INSTALLED_APPS')
+
 
 def run_app(**kwargs):
     sys_args = sys.argv
