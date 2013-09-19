@@ -8,6 +8,7 @@ logan.runner
 
 from __future__ import absolute_import
 
+from django.conf import settings
 from django.core import management
 from optparse import OptionParser
 import os
@@ -46,9 +47,10 @@ def parse_args(args):
     return (args[:index], args[index], args[(index + 1):])
 
 
-def configure_app(config_path=None, project=None, default_config_path=None, default_settings=None,
-            settings_initializer=None, settings_envvar=None, initializer=None,
-            allow_extras=True, config_module_name=None, runner_name=None):
+def configure_app(config_path=None, project=None, default_config_path=None,
+                  default_settings=None, settings_initializer=None,
+                  settings_envvar=None, initializer=None, allow_extras=True,
+                  config_module_name=None, runner_name=None):
     """
     :param project: should represent the canonical name for the project, generally
         the same name it assigned in distutils.
@@ -106,8 +108,11 @@ def configure_app(config_path=None, project=None, default_config_path=None, defa
             traceback.print_exc()
             sys.exit(1)
 
-    importer.install(config_module_name, config_path, default_settings,
+    importer.install(
+        config_module_name, config_path, default_settings,
         allow_extras=allow_extras, callback=settings_callback)
+
+    settings.configure()
 
 
 def run_app(**kwargs):
