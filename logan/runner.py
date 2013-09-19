@@ -8,7 +8,6 @@ logan.runner
 
 from __future__ import absolute_import
 
-from django.conf import settings
 from django.core import management
 from optparse import OptionParser
 import os
@@ -111,8 +110,6 @@ def configure_app(config_path=None, project=None, default_config_path=None,
     importer.install(
         config_module_name, config_path, default_settings,
         allow_extras=allow_extras, callback=settings_callback)
-
-    settings.configure()
 
 
 def run_app(**kwargs):
