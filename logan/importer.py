@@ -43,9 +43,13 @@ class LoganImporter(object):
         return "<%s for '%s' (%s)>" % (type(self), self.name, self.config_path)
 
     def validate(self):
-        # if self.name is None:
-        #     raise ImproperlyConfigured(self.error_msg % self.class_varname)
-        pass
+        # TODO(dcramer): is there a better way to handle validation so it
+        # is lazy and actually happens in LoganLoader?
+        try:
+            execfile(self.config_path, {})
+        except Exception as e:
+            exc_info = sys.exc_info()
+            raise ConfigurationError, unicode(e), exc_info[2]
 
     def find_module(self, fullname, path=None):
         if fullname != self.name:
@@ -73,7 +77,7 @@ class LoganLoader(object):
             return self._load_module(fullname)
         except Exception as e:
             exc_info = sys.exc_info()
-            raise (ConfigurationError, repr(e), exc_info[2])
+            raise ConfigurationError, unicode(e), exc_info[2]
 
     def _load_module(self, fullname):
         # TODO: is this needed?
