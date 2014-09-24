@@ -18,6 +18,12 @@ from logan import importer
 from logan.settings import create_default_settings
 
 
+try:
+    raw_input
+except NameError:  # PYthon 3
+    raw_input = input
+
+
 def sanitize_name(project):
     project = project.replace(' ', '-')
     return re.sub('[^A-Z0-9a-z_-]', '-', project)
