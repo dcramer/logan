@@ -6,7 +6,19 @@ logan.importer
 :license: Apache License 2.0, see LICENSE for more details.
 """
 
-from __future__ import absolute_import
+from __future__ import absolute_import, unicode_literals
+
+try:
+    unicode
+except NameError:
+    basestring = unicode = str  # Python 3
+
+try:
+    execfile
+except NameError:  # Python3
+    def execfile(afile, globalz=None, localz=None):
+        with open(afile, "r") as fh:
+            exec(fh.read(), globalz, localz)
 
 import sys
 from django.utils.importlib import import_module
@@ -51,7 +63,7 @@ class LoganImporter(object):
             })
         except Exception as e:
             exc_info = sys.exc_info()
-            raise ConfigurationError, unicode(e), exc_info[2]
+            raise ConfigurationError(unicode(e), exc_info[2])
 
     def find_module(self, fullname, path=None):
         if fullname != self.name:
@@ -79,7 +91,7 @@ class LoganLoader(object):
             return self._load_module(fullname)
         except Exception as e:
             exc_info = sys.exc_info()
-            raise ConfigurationError, unicode(e), exc_info[2]
+            raise ConfigurationError(unicode(e), exc_info[2])
 
     def _load_module(self, fullname):
         # TODO: is this needed?

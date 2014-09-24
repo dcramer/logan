@@ -26,8 +26,7 @@ setup(
     tests_require=[
         'django>=1',
         'mock>=0.8.0',
-        'nose>=1.1.2',
-        'unittest2',
+        'nose>=1.1.2'
     ],
     test_suite='unittest2.collector',
     license='Apache License 2.0',

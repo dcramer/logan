@@ -8,6 +8,18 @@ logan.settings
 
 from __future__ import absolute_import
 
+try:
+    unicode
+except NameError:
+    basestring = unicode = str  # Python 3
+
+try:
+    execfile
+except NameError:  # Python3
+    def execfile(afile, globalz=None, localz=None):
+        with open(afile, "r") as fh:
+            exec(fh.read(), globalz, localz)
+
 import errno
 import imp
 import os
@@ -84,6 +96,6 @@ def add_settings(mod, allow_extras=True, settings=django_settings):
 
             setattr(settings, setting, setting_value)
 
-    for key, value in extras.iteritems():
+    for key, value in extras.items():
         curval = getattr(settings, key)
         setattr(settings, key, curval + type(curval)(value))
