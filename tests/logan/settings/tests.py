@@ -1,4 +1,4 @@
-from unittest2 import TestCase
+from unittest import TestCase
 
 import mock
 from logan.settings import add_settings

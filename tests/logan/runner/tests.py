@@ -1,4 +1,4 @@
-from unittest2 import TestCase
+from unittest import TestCase
 
 from logan.runner import sanitize_name, parse_args
 
