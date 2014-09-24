@@ -24,7 +24,7 @@ setup(
     zip_safe=False,
     install_requires=[],
     tests_require=[
-        'django>=1',
+        'django>=1.5',
         'mock>=0.8.0',
         'nose>=1.1.2'
     ],
