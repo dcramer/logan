@@ -24,6 +24,8 @@ except NameError:  # PYthon 3
     raw_input = input
 
 
+__configured = False
+
 def sanitize_name(project):
     project = project.replace(' ', '-')
     return re.sub('[^A-Z0-9a-z_-]', '-', project)
@@ -52,6 +54,11 @@ def parse_args(args):
     return (args[:index], args[index], args[(index + 1):])
 
 
+def is_configured():
+    global __configured
+    return __configured
+
+
 def configure_app(config_path=None, project=None, default_config_path=None,
                   default_settings=None, settings_initializer=None,
                   settings_envvar=None, initializer=None, allow_extras=True,
@@ -66,6 +73,7 @@ def configure_app(config_path=None, project=None, default_config_path=None,
     :param initializer: a callback function which will be executed before the command
         is executed. It is passed a dictionary of various configuration attributes.
     """
+    global __configured
 
     project_filename = sanitize_name(project)
 
@@ -116,6 +124,8 @@ def configure_app(config_path=None, project=None, default_config_path=None,
     importer.install(
         config_module_name, config_path, default_settings,
         allow_extras=allow_extras, callback=settings_callback)
+
+    __configured = True
 
     # HACK(dcramer): we need to force access of django.conf.settings to
     # ensure we don't hit any import-driven recursive behavior
