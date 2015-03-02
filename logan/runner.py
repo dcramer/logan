@@ -26,6 +26,7 @@ except NameError:  # PYthon 3
 
 __configured = False
 
+
 def sanitize_name(project):
     project = project.replace(' ', '-')
     return re.sub('[^A-Z0-9a-z_-]', '-', project)
