@@ -63,7 +63,7 @@ def is_configured():
 def configure_app(config_path=None, project=None, default_config_path=None,
                   default_settings=None, settings_initializer=None,
                   settings_envvar=None, initializer=None, allow_extras=True,
-                  config_module_name=None, runner_name=None):
+                  config_module_name=None, runner_name=None, on_configure=None):
     """
     :param project: should represent the canonical name for the project, generally
         the same name it assigned in distutils.
@@ -124,7 +124,8 @@ def configure_app(config_path=None, project=None, default_config_path=None,
 
     importer.install(
         config_module_name, config_path, default_settings,
-        allow_extras=allow_extras, callback=settings_callback)
+        allow_extras=allow_extras, callback=settings_callback,
+        on_configure=on_configure)
 
     __configured = True
 
@@ -132,6 +133,13 @@ def configure_app(config_path=None, project=None, default_config_path=None,
     # ensure we don't hit any import-driven recursive behavior
     from django.conf import settings
     hasattr(settings, 'INSTALLED_APPS')
+
+    if on_configure:
+        on_configure({
+            'project': project,
+            'config_path': config_path,
+            'settings': settings,
+        })
 
 
 def run_app(**kwargs):
