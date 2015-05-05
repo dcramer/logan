@@ -14,7 +14,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='logan',
-    version='0.7.0',
+    version='0.7.1',
     author='David Cramer',
     author_email='dcramer@gmail.com',
     url='http://github.com/dcramer/logan',
