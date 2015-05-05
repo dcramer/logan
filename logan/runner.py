@@ -124,8 +124,7 @@ def configure_app(config_path=None, project=None, default_config_path=None,
 
     importer.install(
         config_module_name, config_path, default_settings,
-        allow_extras=allow_extras, callback=settings_callback,
-        on_configure=on_configure)
+        allow_extras=allow_extras, callback=settings_callback)
 
     __configured = True
 
