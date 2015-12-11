@@ -21,7 +21,10 @@ except NameError:  # Python3
             exec(fh.read(), globalz, localz)
 
 import sys
-from django.utils.importlib import import_module
+try:
+    from django.utils.importlib import import_module  # django<=1.9
+except ImportError:
+    from importlib import import_module
 from logan.settings import load_settings, create_module
 
 installed = False
